@@ -1,6 +1,7 @@
 package com.example.googlemaps2;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -8,9 +9,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.WindowManager;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +50,7 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //widgets
     private EditText mSearchText;
+    private ImageView mGps;
 
     // vars
     private Boolean mLocationPermissionGranted = false;
@@ -79,6 +83,8 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_map);
 
         mSearchText = (EditText) findViewById(R.id.inputSearch);
+        mGps = (ImageView) findViewById(R.id.GPS_icon);
+
         getLocationPermission();
 
     }
@@ -99,6 +105,15 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
                 return false;
             }
         });
+
+        // onclicklistener for back to home location/current location
+        mGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClickL click GPS Icon");
+                getDeviceLocation();
+            }
+        });
         hideKeyboard();
     }
 
@@ -117,7 +132,7 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
             Address address = list.get(0);
             Log.d(TAG, "geoLocate: found a location: " + address.toString());
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
-                    "Lon:"+ address.getLongitude() + ", Lat:" + address.getLatitude());
+                    "Lon:" + address.getLongitude() + ", Lat:" + address.getLatitude());
 
         }
 
@@ -136,8 +151,9 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
-
-                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM, "My Location");
+                            //Maybe a bug for finding current location
+                            //moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM, "My Location");
+                            moveCamera(new LatLng(-36.8810011, 174.7075293), DEFAULT_ZOOM, "My Location");
                         } else {
                             Log.d(TAG, "onComplete: current location is null");
                             Toast.makeText(MapAcitivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
@@ -212,8 +228,21 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // Hide keyboard after searching
-    private void hideKeyboard(){
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    private void hideKeyboard() {
+        // this will give us the view
+        // which is currently focus
+        // in this layout
+        View view = this.getCurrentFocus();
+
+        // if nothing is currently
+        // focus then this will protect
+        // the app from crash
+        if (view != null) {
+            // now assign the system
+            // service to InputMethodManager
+            InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 
