@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init(){
+        // Button for Map
         Button btnMap = (Button) findViewById(R.id.btnMap);
         btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +40,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Button for AutoSearch
+        Button btnAuto = (Button) findViewById(R.id.btnAuto);
+        btnAuto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AutoComplete.class);
+                startActivity(intent);
+            }
+        });
     }
 
     // check 'google service' version is up-to-date for cellphone
