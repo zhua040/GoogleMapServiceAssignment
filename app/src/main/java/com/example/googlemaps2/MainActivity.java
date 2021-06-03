@@ -49,6 +49,26 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Button for current location
+        Button btnCurLocation = (Button) findViewById(R.id.btnCurrentLocation);
+        btnCurLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, currentLocation.class);
+                startActivity(intent);
+            }
+        });
+
+        //Button for find nearby places
+        Button btnFindNearby = (Button) findViewById(R.id.btnNearBy);
+        btnFindNearby.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, findNearByPlaces.class);
+                startActivity(intent);
+            }
+        });
     }
 
     // check 'google service' version is up-to-date for cellphone
