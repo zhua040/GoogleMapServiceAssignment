@@ -61,11 +61,11 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
     /*Auto complete var*/
     //private String apiKey = getString(R.string.google_maps_API_key);
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
-    List<Place.Field> fields;
+    List<Place.Field> fieldList;
 
     //widgets
     private EditText mSearchText;
-    private ImageView mGps;
+    private ImageView mGps, mMagnifySearch;
 
     // vars
     private Boolean mLocationPermissionGranted = false;
@@ -102,33 +102,52 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+
+        //Assign Variables
         mSearchText = (EditText) findViewById(R.id.inputSearch);
         mGps = (ImageView) findViewById(R.id.GPS_icon);
+        mMagnifySearch =(ImageView) findViewById(R.id.ic_magnify);
 
+        //Get Permission
         getLocationPermission();
 
-        /*Auto Complete*/
-        if(!Places.isInitialized()){
-            Places.initialize(getApplicationContext(), "AIzaSyCmr9rKsluEVr28a9Cb5P_jyv1t3kNX2qc");
-        }
-
-        //Create a new Place client instance
-        PlacesClient placesClient = Places.createClient(this);
-        // Set the fields to specify which types of place data to
-        // return after the user has made a selection.
-        fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-
-        mSearchText.setOnClickListener(new View.OnClickListener() {
+        // click it to back to current location
+        mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                        .build(MapAcitivity.this);
-                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                Log.d(TAG, "onClickL click GPS Icon");
+                getDeviceLocation();
             }
         });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
+        /*Autocomplete ---------------------------------------- add-on*/
+
+        //Initialize places
+        /*Places.initialize(getApplicationContext(), "AIzaSyCmr9rKsluEVr28a9Cb5P_jyv1t3kNX2qc");
+        mSearchText.setFocusable(false);
+        mSearchText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Initialise place field list
+                List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,
+                        Place.Field.LAT_LNG, Place.Field.NAME);
+                //Create intent
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldList)
+                        .build(MapAcitivity.this);
+                //Star activity result
+                startActivityForResult(intent, 100);
+            }
+        });*/
+
+
+
+        mMagnifySearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goeLocate();
+            }
+        });
 
 
 
@@ -137,22 +156,17 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
     /*Auto complete override method - Billing enable required!!!*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-                mSearchText.setText(place.getAddress());
-
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i(TAG, status.getStatusMessage());
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-            return;
-        }
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode ==100 && resultCode == RESULT_OK){
+            // when success - Initialise place
+            Place place = Autocomplete.getPlaceFromIntent(data);
+            //Set address on EditText
+            mSearchText.setText(place.getAddress());
+        }else if (resultCode == AutocompleteActivity.RESULT_ERROR){
+            Status status = Autocomplete.getStatusFromIntent(data);
+            Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void init() {
@@ -173,15 +187,16 @@ public class MapAcitivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         // onclicklistener for back to home location/current location
-        mGps.setOnClickListener(new View.OnClickListener() {
+        /*mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClickL click GPS Icon");
                 getDeviceLocation();
             }
-        });
+        });*/
         hideKeyboard();
     }
+
 
     private void goeLocate() {
         Log.d(TAG, "geoLocate: geolocating");
