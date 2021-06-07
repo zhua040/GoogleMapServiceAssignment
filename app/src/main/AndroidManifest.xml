@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GoogleMaps2">
-        <activity android:name=".CalculateDistance"></activity>
+        <activity android:name=".SimpleRetrofit"></activity>
+        <activity android:name=".CalculateDistance" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
