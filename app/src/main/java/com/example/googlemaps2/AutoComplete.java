@@ -25,7 +25,7 @@ public class AutoComplete extends AppCompatActivity {
 
     //Initialise variable
     EditText editText;
-    TextView textView1, textView2;
+    TextView textView1, textView2, textView3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,7 @@ public class AutoComplete extends AppCompatActivity {
         editText = findViewById(R.id.edit_text);
         textView1 = findViewById(R.id.text_view1);
         textView2 = findViewById(R.id.text_view2);
+        textView3 = findViewById(R.id.text_view3);
 
         //Initialize places
         Places.initialize(getApplicationContext(), "AIzaSyCmr9rKsluEVr28a9Cb5P_jyv1t3kNX2qc");
@@ -61,14 +62,20 @@ public class AutoComplete extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode ==100 && resultCode == RESULT_OK){
+
             // when success - Initialise place
             Place place = Autocomplete.getPlaceFromIntent(data);
+
             //Set address on EditText
             editText.setText(place.getAddress());
+
             //Set locality name
             textView1.setText(String.format("Locality Name : %s", place.getName()));
+
             //Set latitude & longitude
             textView2.setText(String.valueOf(place.getLatLng()));
+
+
         }else if (resultCode == AutocompleteActivity.RESULT_ERROR){
             Status status = Autocomplete.getStatusFromIntent(data);
             Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,15 +61,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Button for find nearby places
-        Button btnFindNearby = (Button) findViewById(R.id.btnNearBy);
-        btnFindNearby.setOnClickListener(new View.OnClickListener() {
+
+
+
+        //Button for Calculate distance
+        Button btnCalDistance = (Button) findViewById(R.id.btn_CalDistance);
+        btnCalDistance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, findNearByPlaces.class);
+                Intent intent = new Intent(MainActivity.this, CalculateDistance.class);
                 startActivity(intent);
             }
         });
+
     }
 
     // check 'google service' version is up-to-date for cellphone
