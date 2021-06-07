@@ -62,14 +62,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
         //Button for Calculate distance
         Button btnCalDistance = (Button) findViewById(R.id.btn_CalDistance);
         btnCalDistance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, CalculateDistance.class);
+                startActivity(intent);
+            }
+        });
+
+        //Button for displaying retrofit example
+        Button btnRetrofit = (Button) findViewById(R.id.btn_Retrofit);
+        btnRetrofit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SimpleRetrofit.class);
                 startActivity(intent);
             }
         });
